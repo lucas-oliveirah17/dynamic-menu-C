@@ -22,8 +22,10 @@
 int showMenu();
 void clearScreen();
 
+void functionTestExit();
 void functionTest1();
 void functionTest2();
 void functionTest3();
 void functionTest4();
+
 

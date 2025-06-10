@@ -1,11 +1,17 @@
 # depslib dependency file v1.0
-1749579046 source:f:\projects\dynamic-menu-c\main.c
+1749580686 source:f:\projects\dynamic-menu-c\main.c
 	<stdio.h>
 	<stdlib.h>
 	"dynamic-menu.h"
 
-1749579263 f:\projects\dynamic-menu-c\dynamic-menu.h
+1749581257 f:\projects\dynamic-menu-c\dynamic-menu.h
 	<conio.h>
 	<termios.h>
 	<unistd.h>
+
+1749581320 source:f:\projects\dynamic-menu-c\dynamic-menu.c
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	"dynamic-menu.h"
 
