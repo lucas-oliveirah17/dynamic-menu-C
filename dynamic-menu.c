@@ -12,11 +12,16 @@ typedef struct{
 }ItemMenu;
 
 int showMenu(){
+    enableColorMod();
     ItemMenu mainMenu[] = {
         {"Option 1", functionTest1, true},
         {"Option 2", functionTest2, false},
         {"Option 3", functionTest3, false},
         {"Option 4", functionTest4, false},
+        {"Option 5", functionTest1, false},
+        {"Option 6", functionTest2, false},
+        // label, functionAction, isSelected
+
         {"SAIR", functionTestExit, false}
     };
     int numberItemsMenu = sizeof(mainMenu) / sizeof(mainMenu[0]);
@@ -26,16 +31,26 @@ int showMenu(){
 
     do{
         clearScreen();
-        printf("\n######################");
-        printf("\nTESTE | MENU DINAMICO!");
-        printf("\n######################\n");
 
+        // HEADER MENU
+        printf(ANSI_BOLD ANSI_COLOR_YELLOW
+               "\n######################"
+               "\nTESTE | MENU DINAMICO!"
+               "\n######################\n"
+               ANSI_COLOR_RESET);
+
+        // OPTION MENU
         for(int i = 0; i < rowColumns; i++){
             printf("  ");
             for(int j = 0; j < COLUMNS_MENU; j++){
                 int index = i * COLUMNS_MENU +j;
                 if(index < numberItemsMenu){
-                    printf("%s\t", mainMenu[index].label);
+                    if(mainMenu[index].isSelected)printf(ANSI_COLOR_BLUE);
+                    else printf(ANSI_COLOR_GREEN);
+
+                    printf("%-15s", mainMenu[index].label);
+
+                    printf(ANSI_COLOR_RESET);
                 }
             }
             printf("\n");
@@ -49,6 +64,28 @@ void clearScreen(){
         system("cls");
     #else
         system("clear");
+    #endif // _WIN32
+}
+
+void enableColorMod(){
+    #ifdef _WIN32
+        HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+        if(hOut == INVALID_HANDLE_VALUE){
+            fprintf(stderr, "ERRO: Nao foi possivel obter o handle do console.\n");
+            return;
+        }
+
+        DWORD dwMode = 0;
+        if(!GetConsoleMode(hOut, &dwMode)){
+            fprintf(stderr, "ERRO: Nao foi possivel obter o modo do console.\n");
+            return;
+        }
+
+        dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+        if(!SetConsoleMode(hOut, dwMode)){
+            fprintf(stderr, "ERRO: Nao foi possivel ativar o modo de terminal virtual.\n");
+            return;
+        }
     #endif // _WIN32
 }
 
