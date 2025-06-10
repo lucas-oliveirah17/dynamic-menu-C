@@ -1,15 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include "dynamic-menu.h"
 
 #define COLUMNS_MENU 2
 
-typedef struct{
+struct ItemMenu{
     const char* label;
     void (*functionAction)(void);
     bool isSelected;
-}ItemMenu;
+};
 
 int showMenu(){
     enableColorMod();
@@ -25,6 +26,9 @@ int showMenu(){
         {"SAIR", functionTestExit, false}
     };
     int numberItemsMenu = sizeof(mainMenu) / sizeof(mainMenu[0]);
+
+    int padding = 4;
+    int columnWidth = getColumnWidth(mainMenu, numberItemsMenu, padding);
 
     int rowColumns = (numberItemsMenu / COLUMNS_MENU);
     if(numberItemsMenu % COLUMNS_MENU) rowColumns++;
@@ -48,7 +52,7 @@ int showMenu(){
                     if(mainMenu[index].isSelected)printf(ANSI_COLOR_BLUE);
                     else printf(ANSI_COLOR_GREEN);
 
-                    printf("%-15s", mainMenu[index].label);
+                    printf("%-*s", columnWidth, mainMenu[index].label);
 
                     printf(ANSI_COLOR_RESET);
                 }
@@ -87,6 +91,16 @@ void enableColorMod(){
             return;
         }
     #endif // _WIN32
+}
+
+int getColumnWidth(ItemMenu *menu, int numberItemsMenu, int padding){
+    int maxLabelLength = 0;
+    for(int i = 0; i < numberItemsMenu; i++){
+        int currentLength = strlen(menu[i].label);
+        if(currentLength > maxLabelLength) maxLabelLength = currentLength;
+    }
+
+    return maxLabelLength + padding;
 }
 
 void functionTestExit(){

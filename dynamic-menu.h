@@ -31,9 +31,12 @@
 #define ANSI_COLOR_WHITE   "\x1b[37m"
 #define ANSI_BOLD          "\x1b[1m"
 
+typedef struct ItemMenu ItemMenu;
+
 int showMenu();
 void clearScreen();
 void enableColorMod();
+int getColumnWidth(ItemMenu *menu, int numberItemsMenu, int padding);
 
 void functionTestExit();
 void functionTest1();
