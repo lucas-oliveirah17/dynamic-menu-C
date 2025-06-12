@@ -1,10 +1,11 @@
 # depslib dependency file v1.0
-1749580686 source:f:\projects\dynamic-menu-c\main.c
+1749749660 source:f:\projects\dynamic-menu-c\main.c
 	<stdio.h>
 	<stdlib.h>
 	"dynamic-menu.h"
+	"colors-menu.h"
 
-1749591614 f:\projects\dynamic-menu-c\dynamic-menu.h
+1749748930 f:\projects\dynamic-menu-c\dynamic-menu.h
 	<conio.h>
 	<windows.h>
 	<termios.h>
@@ -15,4 +16,6 @@
 	<stdlib.h>
 	<stdbool.h>
 	"dynamic-menu.h"
+
+1749749683 f:\projects\dynamic-menu-c\colors-menu.h
 

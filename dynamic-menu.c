@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "dynamic-menu.h"
+#include "colors-menu.h"
 
 #define COLUMNS_MENU 2
 
@@ -15,13 +16,13 @@ struct ItemMenu{
 int showMenu(){
     enableColorMod();
     ItemMenu mainMenu[] = {
+        // label, functionAction, isSelected
         {"Option 1", functionTest1, true},
         {"Option 2", functionTest2, false},
         {"Option 3", functionTest3, false},
         {"Option 4", functionTest4, false},
         {"Option 5", functionTest1, false},
         {"Option 6", functionTest2, false},
-        // label, functionAction, isSelected
 
         {"SAIR", functionTestExit, false}
     };
@@ -37,11 +38,11 @@ int showMenu(){
         clearScreen();
 
         // HEADER MENU
-        printf(ANSI_BOLD ANSI_COLOR_YELLOW
-               "\n######################"
+        printf(HEADER_COLOR
+               "######################"
                "\nTESTE | MENU DINAMICO!"
                "\n######################\n"
-               ANSI_COLOR_RESET);
+               COLOR_RESET);
 
         // OPTION MENU
         for(int i = 0; i < rowColumns; i++){
@@ -49,12 +50,12 @@ int showMenu(){
             for(int j = 0; j < COLUMNS_MENU; j++){
                 int index = i * COLUMNS_MENU +j;
                 if(index < numberItemsMenu){
-                    if(mainMenu[index].isSelected)printf(ANSI_COLOR_BLUE);
-                    else printf(ANSI_COLOR_GREEN);
+                    if(mainMenu[index].isSelected)printf(SELECTED_COLOR);
+                    else printf(MENU_COLOR);
 
                     printf("%-*s", columnWidth, mainMenu[index].label);
 
-                    printf(ANSI_COLOR_RESET);
+                    printf(COLOR_RESET);
                 }
             }
             printf("\n");
