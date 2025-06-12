@@ -7,6 +7,7 @@
 void clearScreen();
 void enableColorMod();
 int getColumnWidth(ItemMenu *menu, int numberItemsMenu, int padding);
+int getch_portable();
 
 struct ItemMenu{
     const char* label;
@@ -26,7 +27,7 @@ int showMenu(){
         {"SAIR", functionTestExit}
     };
 
-    int input;
+    int input = 0;
     int columnsMenu = 2;
     int selectedIndex = 0;
     const char* title = "\nTESTE | MENU DINAMICO!";
@@ -66,8 +67,33 @@ int showMenu(){
             printf("\n");
         }
 
+        input = getch_portable();
 
-        system("PAUSE");
+        switch(input){
+            case KEY_UP:
+                break;
+
+            case KEY_DOWN:
+                break;
+
+            case KEY_LEFT:
+                if(!selectedIndex){
+                    selectedIndex = numberItemsMenu - 1;
+                }
+
+                else selectedIndex -= 1;
+                break;
+
+            case KEY_RIGHT:
+                if(selectedIndex == (numberItemsMenu - 1)){
+                    selectedIndex = 0;
+                }
+                else selectedIndex += 1;
+                break;
+
+            case KEY_ENTER:
+                break;
+        }
     }while(1);
 }
 
@@ -110,6 +136,15 @@ int getColumnWidth(ItemMenu *menu, int numberItemsMenu, int padding){
 
     return maxLabelLength + padding;
 }
+
+int getch_portable(){
+    #ifdef _WIN32
+        return _getch();
+    #else
+        return getchar();
+    #endif // _WIN32
+}
+
 
 void functionTestExit(){
     printf("Option Exit selected.\n");
