@@ -1,38 +1,43 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
 #include "dynamic-menu.h"
 #include "colors-menu.h"
 
-#define COLUMNS_MENU 2
+void clearScreen();
+void enableColorMod();
+int getColumnWidth(ItemMenu *menu, int numberItemsMenu, int padding);
 
 struct ItemMenu{
     const char* label;
     void (*functionAction)(void);
-    bool isSelected;
 };
 
 int showMenu(){
-    enableColorMod();
     ItemMenu mainMenu[] = {
         // label, functionAction, isSelected
-        {"Option 1", functionTest1, true},
-        {"Option 2", functionTest2, false},
-        {"Option 3", functionTest3, false},
-        {"Option 4", functionTest4, false},
-        {"Option 5", functionTest1, false},
-        {"Option 6", functionTest2, false},
+        {"Option 1", functionTest1},
+        {"Option 2", functionTest2},
+        {"Option 3", functionTest3},
+        {"Option 4", functionTest4},
+        {"Option 5", functionTest1},
+        {"Option 6", functionTest2},
 
-        {"SAIR", functionTestExit, false}
+        {"SAIR", functionTestExit}
     };
+
+    int input;
+    int columnsMenu = 2;
+    int selectedIndex = 0;
+    const char* title = "\nTESTE | MENU DINAMICO!";
+    int gap = 2;
     int numberItemsMenu = sizeof(mainMenu) / sizeof(mainMenu[0]);
+    int columnWidth = getColumnWidth(mainMenu, numberItemsMenu, gap);
 
-    int padding = 4;
-    int columnWidth = getColumnWidth(mainMenu, numberItemsMenu, padding);
+    enableColorMod();
 
-    int rowColumns = (numberItemsMenu / COLUMNS_MENU);
-    if(numberItemsMenu % COLUMNS_MENU) rowColumns++;
+    int rowsMenu = (numberItemsMenu / columnsMenu);
+    if(numberItemsMenu % columnsMenu) rowsMenu++;
 
     do{
         clearScreen();
@@ -40,17 +45,17 @@ int showMenu(){
         // HEADER MENU
         printf(HEADER_COLOR
                "######################"
-               "\nTESTE | MENU DINAMICO!"
+               "%s"
                "\n######################\n"
-               COLOR_RESET);
+               COLOR_RESET, title);
 
         // OPTION MENU
-        for(int i = 0; i < rowColumns; i++){
-            printf("  ");
-            for(int j = 0; j < COLUMNS_MENU; j++){
-                int index = i * COLUMNS_MENU +j;
+        for(int i = 0; i < rowsMenu; i++){
+            printf("%*s", gap, "");
+            for(int j = 0; j < columnsMenu; j++){
+                int index = i * columnsMenu +j;
                 if(index < numberItemsMenu){
-                    if(mainMenu[index].isSelected)printf(SELECTED_COLOR);
+                    if(index == selectedIndex)printf(SELECTED_COLOR);
                     else printf(MENU_COLOR);
 
                     printf("%-*s", columnWidth, mainMenu[index].label);
@@ -60,6 +65,8 @@ int showMenu(){
             }
             printf("\n");
         }
+
+
         system("PAUSE");
     }while(1);
 }

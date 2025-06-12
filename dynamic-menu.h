@@ -23,9 +23,6 @@
 typedef struct ItemMenu ItemMenu;
 
 int showMenu();
-void clearScreen();
-void enableColorMod();
-int getColumnWidth(ItemMenu *menu, int numberItemsMenu, int padding);
 
 void functionTestExit();
 void functionTest1();
