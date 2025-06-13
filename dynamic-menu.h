@@ -20,6 +20,8 @@
 
 #endif // _WIN32
 
+#define INVALID_KEY 0
+
 typedef struct ItemMenu ItemMenu;
 
 int showMenu();
@@ -29,5 +31,3 @@ void functionTest1();
 void functionTest2();
 void functionTest3();
 void functionTest4();
-
-

@@ -8,7 +8,7 @@
 void clear_screen();
 void enable_color_mode();
 int get_column_width(ItemMenu *menu, int numberItemsMenu, int padding);
-int getch_portable();
+int read_key();
 
 struct ItemMenu{
     const char* label;
@@ -70,10 +70,10 @@ int showMenu(){
         }
 
         do{
-            input = getch_portable();
-            if(input == 224){
+            input = read_key();
+            if(input){
                 isCommand = true;
-                input = getch_portable();
+
                 switch(input){
                     case KEY_UP:
                         if(selectedIndex - columnsMenu >= 0){
@@ -124,12 +124,12 @@ int showMenu(){
                         }
                         else selectedIndex += 1;
                         break;
-                }
-            }
 
-            else{
-                if(input == KEY_ENTER){
-                    mainMenu[selectedIndex].functionAction();
+                    case KEY_ENTER:
+                        mainMenu[selectedIndex].functionAction();
+                        system("PAUSE");
+                        break;
+
                 }
             }
         }while(!isCommand);
@@ -177,29 +177,54 @@ int get_column_width(ItemMenu *menu, int numberItemsMenu, int padding){
     return maxLabelLength + padding;
 }
 
-int getch_portable(){
+int read_key(){
     #ifdef _WIN32
-        return _getch();
+        int input = _getch();
+
+        if(input == 224) input = _getch();
+
+        switch(input){
+            case KEY_UP:
+            case KEY_DOWN:
+            case KEY_LEFT:
+            case KEY_RIGHT:
+            case KEY_ENTER:
+                return input;
+
+            default:
+                return INVALID_KEY;
+        }
+
     #else
-        return getchar();
+        struct termios oldt, newt;
+        int input;
+
+        // Save current terminal config
+        tcgetattr(STDIN_FILENO, &oldt);
+
+        // Copy and modify to non-canonical mode (direct reading)
+        newt = oldt;
+        newt.c_lflag &= ~(ICANON | ECHO);
+        tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+
+        input = getchar();
+        if(input == 27){
+            if(getchar() == 91) input = getchar();
+        }
+
+        switch(input){
+            case KEY_UP:
+            case KEY_DOWN:
+            case KEY_LEFT:
+            case KEY_RIGHT:
+            case KEY_ENTER:
+                break;
+
+            default:
+                input = INVALID_KEY;
+        }
+
+        tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+        return input;
     #endif // _WIN32
-}
-
-void functionTestExit(){
-    printf("Option Exit selected.\n");
-}
-
-void functionTest1(){
-    printf("Option 1 selected.\n");
-}
-
-void functionTest2(){
-    printf("Option 2 selected.\n");
-}
-
-void functionTest3(){
-    printf("Option 3 selected.\n");
-}
-void functionTest4(){
-    printf("Option 4 selected.\n");
 }
