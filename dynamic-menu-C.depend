@@ -11,10 +11,11 @@
 	<termios.h>
 	<unistd.h>
 
-1749756567 source:f:\projects\dynamic-menu-c\dynamic-menu.c
+1749788340 source:f:\projects\dynamic-menu-c\dynamic-menu.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
+	<stdbool.h>
 	"dynamic-menu.h"
 	"colors-menu.h"
 

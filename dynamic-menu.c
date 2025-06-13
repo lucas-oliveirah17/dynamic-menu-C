@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "dynamic-menu.h"
 #include "colors-menu.h"
 
@@ -28,12 +29,13 @@ int showMenu(){
     };
 
     int input = 0;
-    int columnsMenu = 2;
+    int columnsMenu = 3;
     int selectedIndex = 0;
     const char* title = "\nTESTE | MENU DINAMICO!";
     int gap = 2;
     int numberItemsMenu = sizeof(mainMenu) / sizeof(mainMenu[0]);
     int columnWidth = getColumnWidth(mainMenu, numberItemsMenu, gap);
+    bool isCommand = false;
 
     enableColorMod();
 
@@ -67,33 +69,71 @@ int showMenu(){
             printf("\n");
         }
 
-        input = getch_portable();
+        do{
+            input = getch_portable();
+            if(input == 224){
+                isCommand = true;
+                input = getch_portable();
+                switch(input){
+                    case KEY_UP:
+                        if(selectedIndex - columnsMenu >= 0){
+                            selectedIndex -= columnsMenu;
+                        }
 
-        switch(input){
-            case KEY_UP:
-                break;
+                        else{
+                            int currentColumn = selectedIndex % columnsMenu;
+                            for(int i = numberItemsMenu - 1; i >= 0; i--){
+                                if(i % columnsMenu == currentColumn){
+                                    selectedIndex = i;
+                                    break;
+                                }
+                            }
+                        }
 
-            case KEY_DOWN:
-                break;
+                        break;
 
-            case KEY_LEFT:
-                if(!selectedIndex){
-                    selectedIndex = numberItemsMenu - 1;
+                    case KEY_DOWN:
+
+                        if(selectedIndex + columnsMenu < numberItemsMenu){
+                            selectedIndex += columnsMenu;
+                        }
+
+                        else{
+                            int currentColumn = selectedIndex % columnsMenu;
+                            for(int i = 0; i < numberItemsMenu; i++){
+                                if(i % columnsMenu == currentColumn){
+                                    selectedIndex = i;
+                                    break;
+                                }
+                            }
+                        }
+
+                        break;
+
+                    case KEY_LEFT:
+                        if(!selectedIndex){
+                            selectedIndex = numberItemsMenu - 1;
+                        }
+
+                        else selectedIndex -= 1;
+                        break;
+
+                    case KEY_RIGHT:
+                        if(selectedIndex == (numberItemsMenu - 1)){
+                            selectedIndex = 0;
+                        }
+                        else selectedIndex += 1;
+                        break;
                 }
+            }
 
-                else selectedIndex -= 1;
-                break;
-
-            case KEY_RIGHT:
-                if(selectedIndex == (numberItemsMenu - 1)){
-                    selectedIndex = 0;
+            else{
+                if(input == KEY_ENTER){
+                    mainMenu[selectedIndex].functionAction();
                 }
-                else selectedIndex += 1;
-                break;
-
-            case KEY_ENTER:
-                break;
-        }
+            }
+        }while(!isCommand);
+        isCommand = false;
     }while(1);
 }
 
