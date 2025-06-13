@@ -9,7 +9,7 @@ int display_menu(Menu *menu);
 int read_key();
 void clear_screen();
 void enable_color_mode();
-int get_column_width(ItemMenu *menu, int numberItemsMenu, int padding);
+int get_column_width(ItemMenu *menu, int numberItemsMenu);
 
 Menu create_menu(const char* title, ItemMenu* item, int numberItems, int columns, int gap){
     Menu menu;
@@ -25,7 +25,7 @@ Menu create_menu(const char* title, ItemMenu* item, int numberItems, int columns
     menu.rows = menu.numberItems / menu.columns;
     if(menu.numberItems % menu.columns) menu.rows++;
 
-    menu.columnWidth = get_column_width(menu.item, menu.numberItems, menu.gap);
+    menu.columnWidth = get_column_width(menu.item, menu.numberItems);
 
     return menu;
 }
@@ -33,6 +33,7 @@ Menu create_menu(const char* title, ItemMenu* item, int numberItems, int columns
 
 void run_menu(Menu *menu){
     int input = 0;
+    int actionResult;
     bool isCommand = false;
 
     enable_color_mode();
@@ -96,10 +97,12 @@ void run_menu(Menu *menu){
                         break;
 
                     case KEY_ENTER:
-                        menu->item[menu->selectedIndex].functionAction();
-                        system("PAUSE");
-                        break;
+                        actionResult = menu->item[menu->selectedIndex].functionAction();
 
+                        if (actionResult == MENU_EXIT) {
+                            return;
+                        }
+                        break;
                 }
             }
         }while(!isCommand);
@@ -109,45 +112,75 @@ void run_menu(Menu *menu){
 
 int display_menu(Menu *menu){
     char *headerBorder;
-    size_t lengthHeaderBorder;
 
-    lengthHeaderBorder = strlen(menu->title);
+    int lengthHeaderBorder;
+    int lengthTitle;
+    int lengthItems;
+    int gapStart, gapEnd;
+
+    lengthTitle = strlen(menu->title);
+    lengthItems = menu->columns * menu->columnWidth + menu->gap * (menu->columns - 1);
+
+    lengthHeaderBorder = 2 * menu->gap;
+    if(lengthTitle > lengthItems){
+        lengthHeaderBorder += lengthTitle;
+    }
+    else{
+        lengthHeaderBorder += lengthItems;
+    }
 
     headerBorder = (char*) malloc(lengthHeaderBorder + 1);
     if(headerBorder == NULL){
         printf("\nError: Failed to allocate memory!\n");
         return 1;
     }
-
     memset(headerBorder, '#', lengthHeaderBorder);
     headerBorder[lengthHeaderBorder] = '\0';
 
+    // HEADER MENU
+    gapEnd = (lengthHeaderBorder - lengthTitle) / 2;
+    gapStart = (lengthHeaderBorder - lengthTitle) % 2;
+    if(gapStart){
+        gapStart = gapEnd + 1;
+    }
+    else gapStart = gapEnd;
+
     clear_screen();
 
-    // HEADER MENU
-    printf(HEADER_COLOR
-           "\n%s"
-           "\n%s"
-           "\n%s\n"
-           COLOR_RESET,
-           headerBorder, menu->title, headerBorder);
+    printf(HEADER_COLOR);
+    printf("%s\n", headerBorder);
+    printf("%-*s", gapStart, "");
+    printf("%s", menu->title);
+    printf("%-*s\n", gapEnd, "");
+    printf("%s\n", headerBorder);
+    printf(COLOR_RESET);
 
     // OPTION MENU
+    gapEnd = (lengthHeaderBorder - lengthItems) / 2;
+    gapStart = (lengthHeaderBorder - lengthItems) % 2;
+    if(gapStart){
+        gapStart = gapEnd + 1;
+    }
+    else gapStart = gapEnd;
+
     for(int i = 0; i < menu->rows; i++){
-        printf("%-*s", menu->gap, "");
+        printf("%-*s", gapStart, "");
+
         for(int j = 0; j < menu->columns; j++){
             int index = i * menu->columns +j;
             if(index < menu->numberItems){
                 if(index == menu->selectedIndex)printf(SELECTED_COLOR);
                 else printf(MENU_COLOR);
-
                 printf("%-*s", menu->columnWidth, menu->item[index].label);
-
                 printf(COLOR_RESET);
+                if(j != menu->columns - 1){
+                    printf("%-*s", menu->gap, "");
+                }
             }
         }
-        printf("\n");
+        printf("%-*s\n", gapEnd, "");
     }
+    printf(HEADER_COLOR "%s\n" COLOR_RESET, headerBorder);
 
     free(headerBorder);
     return 0;
@@ -183,14 +216,14 @@ void enable_color_mode(){
     #endif // _WIN32
 }
 
-int get_column_width(ItemMenu *menu, int numberItemsMenu, int padding){
+int get_column_width(ItemMenu *menu, int numberItemsMenu){
     int maxLabelLength = 0;
     for(int i = 0; i < numberItemsMenu; i++){
         int currentLength = strlen(menu[i].label);
         if(currentLength > maxLabelLength) maxLabelLength = currentLength;
     }
 
-    return maxLabelLength + padding;
+    return maxLabelLength;
 }
 
 int read_key(){

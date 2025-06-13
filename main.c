@@ -4,15 +4,16 @@
 #include "dynamic-menu.h"
 #include "colors-menu.h"
 
-void functionTestExit(){printf("Option Exit selected.\n");}
-void functionTest1(){printf("Option 1 selected.\n");}
-void functionTest2(){printf("Option 2 selected.\n");}
-void functionTest3(){printf("Option 3 selected.\n");}
-void functionTest4(){printf("Option 4 selected.\n");}
-void functionTest5(){printf("Option 5 selected.\n");}
-void functionTest6(){printf("Option 6 selected.\n");}
+// Function for tests
+int functionTestExit(){return MENU_EXIT;}
+int functionTest1(){printf("Option 1 selected.\n"); system("PAUSE"); return 0;}
+int functionTest2(){printf("Option 2 selected.\n"); system("PAUSE"); return 0;}
+int functionTest3(){printf("Option 3 selected.\n"); system("PAUSE"); return 0;}
+int functionTest4(){printf("Option 4 selected.\n"); system("PAUSE"); return 0;}
+int functionTest5(){printf("Option 5 selected.\n"); system("PAUSE"); return 0;}
+int functionTest6(){printf("Option 6 selected.\n"); system("PAUSE"); return 0;}
 
-void functionSubMenu();
+int call_SubMenu();
 
 int main()
 {
@@ -21,16 +22,16 @@ int main()
     // Create Main for Example
     Menu mainMenu;
     ItemMenu itemMainMenu[] = {
-        // label, functionAction, isSelected
-        {"Option 1", functionSubMenu},
+        // label, functionAction
+        {"SUBMENU", call_SubMenu},
+        {"Option 1", functionTest1},
         {"Option 2", functionTest2},
-        {"Option 3", functionTest3},
 
         {"SAIR", functionTestExit}
     };
     int numberItemsMenu = sizeof(itemMainMenu) / sizeof(itemMainMenu[0]);
-    int columnsMenu = 3;
-    int gapMenu = 2;
+    int columnsMenu = 2;
+    int gapMenu = 4;
 
     mainMenu = create_menu(
         "TESTE | MENU DINAMICO!",
@@ -44,10 +45,10 @@ int main()
     return 0;
 }
 
-void functionSubMenu(){
+int call_SubMenu(){
     // Create Sub Main for Example
-    Menu subMenu;
-    ItemMenu itemSubMenu[] = {
+    Menu menu;
+    ItemMenu itemMenu[] = {
         // label, functionAction, isSelected
         {"Option 1", functionTest1},
         {"Option 2", functionTest2},
@@ -56,19 +57,20 @@ void functionSubMenu(){
         {"Option 5", functionTest5},
         {"Option 6", functionTest6},
 
-        {"Voltar", functionTestExit}
+        {"VOLTAR", functionTestExit}
     };
-    int numberItemsSubMenu = sizeof(itemSubMenu) / sizeof(itemSubMenu[0]);
-    int columnsSubMenu = 3;
-    int gapSubMenu = 2;
+    int numberItemsMenu = sizeof(itemMenu) / sizeof(itemMenu[0]);
+    int columnsMenu = 3;
+    int gapMenu = 4;
 
-    subMenu = create_menu(
+    menu = create_menu(
         "TESTE | SUB MENU DINAMICO!",
-        itemSubMenu,
-        numberItemsSubMenu,
-        columnsSubMenu,
-        gapSubMenu
+        itemMenu,
+        numberItemsMenu,
+        columnsMenu,
+        gapMenu
     );
 
-    run_menu(&subMenu);
+    run_menu(&menu);
+    return 0;
 }

@@ -24,10 +24,12 @@
 #endif // _WIN32
 
 #define INVALID_KEY 0
+#define MENU_CONTINUE 0
+#define MENU_EXIT 1
 
 typedef struct ItemMenu{
     const char* label;
-    void (*functionAction)(void);
+    int (*functionAction)(void);
 } ItemMenu;
 
 typedef struct Menu{
