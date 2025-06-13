@@ -5,9 +5,9 @@
 #include "dynamic-menu.h"
 #include "colors-menu.h"
 
-void clearScreen();
-void enableColorMod();
-int getColumnWidth(ItemMenu *menu, int numberItemsMenu, int padding);
+void clear_screen();
+void enable_color_mode();
+int get_column_width(ItemMenu *menu, int numberItemsMenu, int padding);
 int getch_portable();
 
 struct ItemMenu{
@@ -34,16 +34,16 @@ int showMenu(){
     const char* title = "\nTESTE | MENU DINAMICO!";
     int gap = 2;
     int numberItemsMenu = sizeof(mainMenu) / sizeof(mainMenu[0]);
-    int columnWidth = getColumnWidth(mainMenu, numberItemsMenu, gap);
+    int columnWidth = get_column_width(mainMenu, numberItemsMenu, gap);
     bool isCommand = false;
 
-    enableColorMod();
+    enable_color_mode();
 
     int rowsMenu = (numberItemsMenu / columnsMenu);
     if(numberItemsMenu % columnsMenu) rowsMenu++;
 
     do{
-        clearScreen();
+        clear_screen();
 
         // HEADER MENU
         printf(HEADER_COLOR
@@ -137,7 +137,7 @@ int showMenu(){
     }while(1);
 }
 
-void clearScreen(){
+void clear_screen(){
     #ifdef _WIN32
         system("cls");
     #else
@@ -145,7 +145,7 @@ void clearScreen(){
     #endif // _WIN32
 }
 
-void enableColorMod(){
+void enable_color_mode(){
     #ifdef _WIN32
         HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
         if(hOut == INVALID_HANDLE_VALUE){
@@ -167,7 +167,7 @@ void enableColorMod(){
     #endif // _WIN32
 }
 
-int getColumnWidth(ItemMenu *menu, int numberItemsMenu, int padding){
+int get_column_width(ItemMenu *menu, int numberItemsMenu, int padding){
     int maxLabelLength = 0;
     for(int i = 0; i < numberItemsMenu; i++){
         int currentLength = strlen(menu[i].label);
@@ -184,7 +184,6 @@ int getch_portable(){
         return getchar();
     #endif // _WIN32
 }
-
 
 void functionTestExit(){
     printf("Option Exit selected.\n");
