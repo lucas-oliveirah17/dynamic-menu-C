@@ -5,69 +5,41 @@
 #include "dynamic-menu.h"
 #include "colors-menu.h"
 
+int display_menu(Menu *menu);
+int read_key();
 void clear_screen();
 void enable_color_mode();
 int get_column_width(ItemMenu *menu, int numberItemsMenu, int padding);
-int read_key();
 
-struct ItemMenu{
-    const char* label;
-    void (*functionAction)(void);
-};
+Menu create_menu(const char* title, ItemMenu* item, int numberItems, int columns, int gap){
+    Menu menu;
 
-int showMenu(){
-    ItemMenu mainMenu[] = {
-        // label, functionAction, isSelected
-        {"Option 1", functionTest1},
-        {"Option 2", functionTest2},
-        {"Option 3", functionTest3},
-        {"Option 4", functionTest4},
-        {"Option 5", functionTest1},
-        {"Option 6", functionTest2},
+    menu.title = title;
+    menu.item = item;
+    menu.numberItems = numberItems;
+    menu.columns = columns;
+    menu.gap = gap;
 
-        {"SAIR", functionTestExit}
-    };
+    menu.selectedIndex = 0;
 
+    menu.rows = menu.numberItems / menu.columns;
+    if(menu.numberItems % menu.columns) menu.rows++;
+
+    menu.columnWidth = get_column_width(menu.item, menu.numberItems, menu.gap);
+
+    return menu;
+}
+
+
+void run_menu(Menu *menu){
     int input = 0;
-    int columnsMenu = 3;
-    int selectedIndex = 0;
-    const char* title = "\nTESTE | MENU DINAMICO!";
-    int gap = 2;
-    int numberItemsMenu = sizeof(mainMenu) / sizeof(mainMenu[0]);
-    int columnWidth = get_column_width(mainMenu, numberItemsMenu, gap);
     bool isCommand = false;
 
     enable_color_mode();
 
-    int rowsMenu = (numberItemsMenu / columnsMenu);
-    if(numberItemsMenu % columnsMenu) rowsMenu++;
-
     do{
-        clear_screen();
+        display_menu(menu);
 
-        // HEADER MENU
-        printf(HEADER_COLOR
-               "######################"
-               "%s"
-               "\n######################\n"
-               COLOR_RESET, title);
-
-        // OPTION MENU
-        for(int i = 0; i < rowsMenu; i++){
-            printf("%*s", gap, "");
-            for(int j = 0; j < columnsMenu; j++){
-                int index = i * columnsMenu +j;
-                if(index < numberItemsMenu){
-                    if(index == selectedIndex)printf(SELECTED_COLOR);
-                    else printf(MENU_COLOR);
-
-                    printf("%-*s", columnWidth, mainMenu[index].label);
-
-                    printf(COLOR_RESET);
-                }
-            }
-            printf("\n");
-        }
 
         do{
             input = read_key();
@@ -76,57 +48,55 @@ int showMenu(){
 
                 switch(input){
                     case KEY_UP:
-                        if(selectedIndex - columnsMenu >= 0){
-                            selectedIndex -= columnsMenu;
+                        if(menu->selectedIndex - menu->columns >= 0){
+                            menu->selectedIndex -= menu->columns;
                         }
 
                         else{
-                            int currentColumn = selectedIndex % columnsMenu;
-                            for(int i = numberItemsMenu - 1; i >= 0; i--){
-                                if(i % columnsMenu == currentColumn){
-                                    selectedIndex = i;
+                            int currentColumn = menu->selectedIndex % menu->columns;
+                            for(int i = menu->numberItems - 1; i >= 0; i--){
+                                if(i % menu->columns == currentColumn){
+                                    menu->selectedIndex = i;
                                     break;
                                 }
                             }
                         }
-
                         break;
 
                     case KEY_DOWN:
 
-                        if(selectedIndex + columnsMenu < numberItemsMenu){
-                            selectedIndex += columnsMenu;
+                        if(menu->selectedIndex + menu->columns < menu->numberItems){
+                            menu->selectedIndex += menu->columns;
                         }
 
                         else{
-                            int currentColumn = selectedIndex % columnsMenu;
-                            for(int i = 0; i < numberItemsMenu; i++){
-                                if(i % columnsMenu == currentColumn){
-                                    selectedIndex = i;
+                            int currentColumn = menu->selectedIndex % menu->columns;
+                            for(int i = 0; i < menu->numberItems; i++){
+                                if(i % menu->columns == currentColumn){
+                                    menu->selectedIndex = i;
                                     break;
                                 }
                             }
                         }
-
                         break;
 
                     case KEY_LEFT:
-                        if(!selectedIndex){
-                            selectedIndex = numberItemsMenu - 1;
+                        if(menu->selectedIndex == 0){
+                            menu->selectedIndex = menu->numberItems - 1;
                         }
 
-                        else selectedIndex -= 1;
+                        else menu->selectedIndex -= 1;
                         break;
 
                     case KEY_RIGHT:
-                        if(selectedIndex == (numberItemsMenu - 1)){
-                            selectedIndex = 0;
+                        if(menu->selectedIndex == (menu->numberItems - 1)){
+                            menu->selectedIndex = 0;
                         }
-                        else selectedIndex += 1;
+                        else menu->selectedIndex += 1;
                         break;
 
                     case KEY_ENTER:
-                        mainMenu[selectedIndex].functionAction();
+                        menu->item[menu->selectedIndex].functionAction();
                         system("PAUSE");
                         break;
 
@@ -135,6 +105,52 @@ int showMenu(){
         }while(!isCommand);
         isCommand = false;
     }while(1);
+}
+
+int display_menu(Menu *menu){
+    char *headerBorder;
+    size_t lengthHeaderBorder;
+
+    lengthHeaderBorder = strlen(menu->title);
+
+    headerBorder = (char*) malloc(lengthHeaderBorder + 1);
+    if(headerBorder == NULL){
+        printf("\nError: Failed to allocate memory!\n");
+        return 1;
+    }
+
+    memset(headerBorder, '#', lengthHeaderBorder);
+    headerBorder[lengthHeaderBorder] = '\0';
+
+    clear_screen();
+
+    // HEADER MENU
+    printf(HEADER_COLOR
+           "\n%s"
+           "\n%s"
+           "\n%s\n"
+           COLOR_RESET,
+           headerBorder, menu->title, headerBorder);
+
+    // OPTION MENU
+    for(int i = 0; i < menu->rows; i++){
+        printf("%-*s", menu->gap, "");
+        for(int j = 0; j < menu->columns; j++){
+            int index = i * menu->columns +j;
+            if(index < menu->numberItems){
+                if(index == menu->selectedIndex)printf(SELECTED_COLOR);
+                else printf(MENU_COLOR);
+
+                printf("%-*s", menu->columnWidth, menu->item[index].label);
+
+                printf(COLOR_RESET);
+            }
+        }
+        printf("\n");
+    }
+
+    free(headerBorder);
+    return 0;
 }
 
 void clear_screen(){

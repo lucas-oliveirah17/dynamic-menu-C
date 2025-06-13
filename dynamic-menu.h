@@ -1,3 +1,6 @@
+#ifndef DYNAMIC_MENU_H
+#define DYNAMIC_MENU_H
+
 #ifdef _WIN32
     #include <conio.h>
     #include <windows.h>
@@ -22,12 +25,24 @@
 
 #define INVALID_KEY 0
 
-typedef struct ItemMenu ItemMenu;
+typedef struct ItemMenu{
+    const char* label;
+    void (*functionAction)(void);
+} ItemMenu;
 
-int showMenu();
+typedef struct Menu{
+    const char* title;
+    ItemMenu* item;
+    int columns;
+    int gap;
 
-void functionTestExit();
-void functionTest1();
-void functionTest2();
-void functionTest3();
-void functionTest4();
+    int selectedIndex;
+    int numberItems;
+    int rows;
+    int columnWidth;
+} Menu;
+
+Menu create_menu(const char* title, ItemMenu* item, int numberItems, int columns, int gap);
+void run_menu(Menu *menu);
+
+#endif // DYNAMIC_MENU_H_INCLUDED
