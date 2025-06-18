@@ -109,7 +109,7 @@ void run_menu(Menu *menu){
                     case KEY_ENTER:
                         actionResult = menu->item[menu->selectedIndex].action();
 
-                        if (actionResult == MENU_EXIT) {
+                        if (actionResult == MENU_FLOW_EXIT) {
                             return;
                         }
                         break;
@@ -180,7 +180,15 @@ int display_menu(Menu *menu){
             int index = i * menu->columns +j;
             if(index < menu->numberItems){
                 if(index == menu->selectedIndex)printf(SELECTED_COLOR);
-                else printf(MENU_COLOR);
+
+                else if(menu->item[index].activated == false){
+                    printf(DISABLED_COLOR);
+                }
+
+                else {
+                    printf(MENU_COLOR);
+                }
+
                 printf("%-*s", menu->columnWidth, menu->item[index].label);
                 printf(COLOR_RESET);
                 if(j != menu->columns - 1){
@@ -251,7 +259,7 @@ int read_key(){
                 return input;
 
             default:
-                return INVALID_KEY;
+                return MENU_OP_INVALID_KEY;
         }
 
     #else
@@ -280,10 +288,21 @@ int read_key(){
                 break;
 
             default:
-                input = INVALID_KEY;
+                input = MENU_OP_INVALID_KEY;
         }
 
         tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
         return input;
     #endif // _WIN32
+}
+
+MenuOpStatus disable_item(Menu *menu, const char* label){
+    for(int i = 0; i < menu->numberItems; i++){
+        if(strcmp(menu->item[i].label, label) == 0){
+            menu->item[i].activated = false;
+            return MENU_OP_SUCCESS;
+        }
+    }
+
+    return MENU_OP_ITEM_NOT_FOUND;
 }

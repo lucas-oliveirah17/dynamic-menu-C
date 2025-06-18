@@ -25,12 +25,19 @@
 
 #endif // _WIN32
 
-#define INVALID_KEY 0
-#define MENU_CONTINUE 0
-#define MENU_EXIT 1
-
 #define CREATE_MENU(title, items_array, columns, gap) \
     create_menu(title, items_array, (sizeof(items_array) / sizeof(items_array[0])), columns, gap)
+
+typedef enum{
+    MENU_FLOW_CONTINUE,
+    MENU_FLOW_EXIT
+} MenuFlow;
+
+typedef enum{
+    MENU_OP_SUCCESS,
+    MENU_OP_INVALID_KEY = 0,
+    MENU_OP_ITEM_NOT_FOUND
+} MenuOpStatus;
 
 typedef struct ItemMenu{
     const char* label;
@@ -55,5 +62,6 @@ typedef struct Menu{
 
 Menu create_menu(const char* title, ItemMenu* item, int numberItems, int columns, int gap);
 void run_menu(Menu *menu);
+MenuOpStatus disable_item(Menu *menu, const char* label);
 
 #endif // DYNAMIC_MENU_H_INCLUDED

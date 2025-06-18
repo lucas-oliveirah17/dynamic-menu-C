@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <string.h>
 #include "dynamic-menu.h"
 #include "colors-menu.h"
 
 // Function for tests
-int functionTestExit(){return MENU_EXIT;}
+int functionTestExit(){return MENU_FLOW_EXIT;}
 int functionTest1(){printf("Option 1 selected.\n"); system("PAUSE"); return 0;}
 int functionTest2(){printf("Option 2 selected.\n"); system("PAUSE"); return 0;}
 int functionTest3(){printf("Option 3 selected.\n"); system("PAUSE"); return 0;}
@@ -18,6 +19,7 @@ int call_SubMenu();
 int main()
 {
     setlocale(LC_ALL, "");
+    MenuOpStatus status;
 
     // Create Main for Example
     Menu mainMenu;
@@ -38,6 +40,12 @@ int main()
         columnsMenu,
         gapMenu
     );
+
+    status = disable_item(&mainMenu, "Option 2");
+    if(status == MENU_OP_ITEM_NOT_FOUND){
+        printf("\nERROR: Label not found!\n");
+        return MENU_OP_ITEM_NOT_FOUND;
+    }
 
     run_menu(&mainMenu);
     return 0;
