@@ -28,11 +28,13 @@ Menu create_menu(const char* title, ItemMenu* item, int numberItems, int columns
     menu.columnWidth = get_column_width(menu.item, menu.numberItems);
 
     for(int i = 0; i < numberItems; i++){
-        menu.item[i].activated = true;
+        if(menu.item[i].label != NULL){
+            menu.item[i].activated = true;
 
-        menu.item[i].currentColumn = i % columns;
+            menu.item[i].currentColumn = i % columns;
 
-        menu.item[i].currentRow = i / columns;
+            menu.item[i].currentRow = i / columns;
+        }
     }
 
     return menu;
@@ -105,7 +107,7 @@ void run_menu(Menu *menu){
                         break;
 
                     case KEY_ENTER:
-                        actionResult = menu->item[menu->selectedIndex].functionAction();
+                        actionResult = menu->item[menu->selectedIndex].action();
 
                         if (actionResult == MENU_EXIT) {
                             return;

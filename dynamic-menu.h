@@ -29,9 +29,12 @@
 #define MENU_CONTINUE 0
 #define MENU_EXIT 1
 
+#define CREATE_MENU(title, items_array, columns, gap) \
+    create_menu(title, items_array, (sizeof(items_array) / sizeof(items_array[0])), columns, gap)
+
 typedef struct ItemMenu{
     const char* label;
-    int (*functionAction)(void);
+    int (*action)(void);
 
     bool activated;
     int currentColumn;

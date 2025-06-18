@@ -23,20 +23,18 @@ int main()
     Menu mainMenu;
     ItemMenu itemMainMenu[] = {
         // label, functionAction, argument
-        {"SUBMENU", call_SubMenu},
-        {"Option 1", functionTest1},
-        {"Option 2", functionTest2},
+        {.label = "SUBMENU", .action = call_SubMenu},
+        {.label = "Option 1", .action = functionTest1},
+        {.label = "Option 2", .action = functionTest2},
 
         {"SAIR", functionTestExit}
     };
-    int numberItemsMenu = sizeof(itemMainMenu) / sizeof(itemMainMenu[0]);
     int columnsMenu = 2;
     int gapMenu = 3;
 
-    mainMenu = create_menu(
+    mainMenu = CREATE_MENU(
         "TESTE | MENU DINAMICO!",
         itemMainMenu,
-        numberItemsMenu,
         columnsMenu,
         gapMenu
     );
@@ -49,24 +47,22 @@ int call_SubMenu(){
     // Create Sub Main for Example
     Menu menu;
     ItemMenu itemMenu[] = {
-        // label, functionAction,
-        {"Option 1", functionTest1},
-        {"Option 2", functionTest2},
-        {"Option 3", functionTest3},
-        {"Option 4", functionTest4},
-        {"Option 5", functionTest5},
-        {"Option 6", functionTest6},
+        {.label = "Option 1", .action = functionTest1},
+        {.label = "Option 2", .action = functionTest2},
+        {.label = "Option 3", .action = functionTest3},
+        {.label = "Option 4", .action = functionTest4},
+        {.label = "Option 5", .action = functionTest5},
+        {.label = "Option 6", .action = functionTest6},
 
         {"VOLTAR", functionTestExit}
     };
-    int numberItemsMenu = sizeof(itemMenu) / sizeof(itemMenu[0]);
-    int columnsMenu = 3;
+
+    int columnsMenu = 2;
     int gapMenu = 3;
 
-    menu = create_menu(
+    menu = CREATE_MENU(
         "TESTE | SUB MENU DINAMICO!",
         itemMenu,
-        numberItemsMenu,
         columnsMenu,
         gapMenu
     );
