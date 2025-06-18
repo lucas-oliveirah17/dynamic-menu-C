@@ -27,6 +27,14 @@ Menu create_menu(const char* title, ItemMenu* item, int numberItems, int columns
 
     menu.columnWidth = get_column_width(menu.item, menu.numberItems);
 
+    for(int i = 0; i < numberItems; i++){
+        menu.item[i].activated = true;
+
+        menu.item[i].currentColumn = i % columns;
+
+        menu.item[i].currentRow = i / columns;
+    }
+
     return menu;
 }
 

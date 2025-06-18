@@ -1,6 +1,8 @@
 #ifndef DYNAMIC_MENU_H
 #define DYNAMIC_MENU_H
 
+#include <stdbool.h>
+
 #ifdef _WIN32
     #include <conio.h>
     #include <windows.h>
@@ -30,6 +32,10 @@
 typedef struct ItemMenu{
     const char* label;
     int (*functionAction)(void);
+
+    bool activated;
+    int currentColumn;
+    int currentRow;
 } ItemMenu;
 
 typedef struct Menu{

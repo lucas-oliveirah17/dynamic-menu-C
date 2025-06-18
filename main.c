@@ -22,7 +22,7 @@ int main()
     // Create Main for Example
     Menu mainMenu;
     ItemMenu itemMainMenu[] = {
-        // label, functionAction
+        // label, functionAction, argument
         {"SUBMENU", call_SubMenu},
         {"Option 1", functionTest1},
         {"Option 2", functionTest2},
@@ -31,7 +31,7 @@ int main()
     };
     int numberItemsMenu = sizeof(itemMainMenu) / sizeof(itemMainMenu[0]);
     int columnsMenu = 2;
-    int gapMenu = 4;
+    int gapMenu = 3;
 
     mainMenu = create_menu(
         "TESTE | MENU DINAMICO!",
@@ -49,7 +49,7 @@ int call_SubMenu(){
     // Create Sub Main for Example
     Menu menu;
     ItemMenu itemMenu[] = {
-        // label, functionAction, isSelected
+        // label, functionAction,
         {"Option 1", functionTest1},
         {"Option 2", functionTest2},
         {"Option 3", functionTest3},
@@ -61,7 +61,7 @@ int call_SubMenu(){
     };
     int numberItemsMenu = sizeof(itemMenu) / sizeof(itemMenu[0]);
     int columnsMenu = 3;
-    int gapMenu = 4;
+    int gapMenu = 3;
 
     menu = create_menu(
         "TESTE | SUB MENU DINAMICO!",
