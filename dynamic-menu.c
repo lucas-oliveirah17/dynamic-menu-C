@@ -306,3 +306,8 @@ MenuOpStatus disable_item(Menu *menu, const char* label){
 
     return MENU_OP_ITEM_NOT_FOUND;
 }
+
+int exit_menu(){
+    return MENU_FLOW_EXIT;
+}
+

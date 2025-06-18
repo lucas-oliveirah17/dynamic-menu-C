@@ -6,7 +6,6 @@
 #include "colors-menu.h"
 
 // Function for tests
-int functionTestExit(){return MENU_FLOW_EXIT;}
 int functionTest1(){printf("Option 1 selected.\n"); system("PAUSE"); return 0;}
 int functionTest2(){printf("Option 2 selected.\n"); system("PAUSE"); return 0;}
 int functionTest3(){printf("Option 3 selected.\n"); system("PAUSE"); return 0;}
@@ -29,7 +28,7 @@ int main()
         {.label = "Option 1", .action = functionTest1},
         {.label = "Option 2", .action = functionTest2},
 
-        {"SAIR", functionTestExit}
+        {.label = "SAIR", .action = exit_menu}
     };
     int columnsMenu = 2;
     int gapMenu = 3;
@@ -62,7 +61,7 @@ int call_SubMenu(){
         {.label = "Option 5", .action = functionTest5},
         {.label = "Option 6", .action = functionTest6},
 
-        {"VOLTAR", functionTestExit}
+        {.label = "VOLTAR", .action = exit_menu}
     };
 
     int columnsMenu = 2;
