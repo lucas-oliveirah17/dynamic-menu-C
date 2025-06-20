@@ -70,13 +70,13 @@ void run_menu(Menu *menu){
             if(input){
                 isCommand = true;
 
+                int previousIndex = menu->selectedIndex;
+                int currentColumn = menu->item[previousIndex].currentColumn;
+                int currentRow = menu->item[previousIndex].currentRow;
+                bool itFound = false;
                 switch(input){
                     case KEY_UP:{
-                        int previousIndex = menu->selectedIndex;
-                        int currentColumn = menu->item[previousIndex].currentColumn;
-
                         int newIndex = previousIndex - menu->columns;
-                        bool itFound = false;
 
                         while(newIndex >= 0 &&
                               menu->item[newIndex].currentColumn == currentColumn) {
@@ -101,11 +101,7 @@ void run_menu(Menu *menu){
                     }
 
                     case KEY_DOWN:{
-                        int previousIndex = menu->selectedIndex;
-                        int currentColumn = menu->item[previousIndex].currentColumn;
-
                         int newIndex = previousIndex + menu->columns;
-                        bool itFound = false;
 
                         while(newIndex < menu->numberItems &&
                               menu->item[newIndex].currentColumn == currentColumn) {
@@ -130,11 +126,7 @@ void run_menu(Menu *menu){
                     }
 
                     case KEY_LEFT:{
-                        int previousIndex = menu->selectedIndex;
-                        int currentRow = menu->item[previousIndex].currentRow;
-
                         int newIndex = previousIndex - 1;
-                        bool itFound = false;
 
                         while(newIndex >= 0 &&
                               menu->item[newIndex].currentRow == currentRow) {
@@ -159,11 +151,7 @@ void run_menu(Menu *menu){
                     }
 
                     case KEY_RIGHT:{
-                        int previousIndex = menu->selectedIndex;
-                        int currentRow = menu->item[previousIndex].currentRow;
-
                         int newIndex = previousIndex + 1;
-                        bool itFound = false;
 
                         while(newIndex < menu->numberItems &&
                               menu->item[newIndex].currentRow == currentRow) {
