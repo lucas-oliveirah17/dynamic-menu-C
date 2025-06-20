@@ -27,28 +27,11 @@ Menu create_menu(const char* title, ItemMenu* item, int numberItems, int columns
 
     menu.columnWidth = get_column_width(menu.item, menu.numberItems);
 
-    int validItemIndex = 0;
     for(int i = 0; i < numberItems; i++){
-        if(menu.item[i].label != NULL){
-            menu.item[i].activated = true;
-
-            menu.item[i].currentColumn = validItemIndex % menu.columns;
-
-            menu.item[i].currentRow = validItemIndex / menu.columns;
-
-            validItemIndex++;
-        }
+        menu.item[i].activated = true;
+        menu.item[i].currentColumn = i % menu.columns;
+        menu.item[i].currentRow = i / menu.columns;
     }
-
-//    for(int i = 0; i < numberItems; i++){
-//        printf("\nMenu | numberItems = %d", menu.numberItems);
-//        printf("\nMenu | columns = %d", menu.columns);
-//        printf("\nMenu | rows = %d\n", menu.columns);
-//
-//        printf("\nItem %d | row = %d", i, menu.item[i].currentRow);
-//        printf("\nItem %d | column = %d\n", i, menu.item[i].currentColumn);
-//        system("PAUSE");
-//    }
 
     return menu;
 }
@@ -63,7 +46,6 @@ void run_menu(Menu *menu){
 
     do{
         display_menu(menu);
-
 
         do{
             input = read_key();
