@@ -27,15 +27,28 @@ Menu create_menu(const char* title, ItemMenu* item, int numberItems, int columns
 
     menu.columnWidth = get_column_width(menu.item, menu.numberItems);
 
+    int validItemIndex = 0;
     for(int i = 0; i < numberItems; i++){
         if(menu.item[i].label != NULL){
             menu.item[i].activated = true;
 
-            menu.item[i].currentColumn = i % columns;
+            menu.item[i].currentColumn = validItemIndex % menu.columns;
 
-            menu.item[i].currentRow = i / columns;
+            menu.item[i].currentRow = validItemIndex / menu.columns;
+
+            validItemIndex++;
         }
     }
+
+//    for(int i = 0; i < numberItems; i++){
+//        printf("\nMenu | numberItems = %d", menu.numberItems);
+//        printf("\nMenu | columns = %d", menu.columns);
+//        printf("\nMenu | rows = %d\n", menu.columns);
+//
+//        printf("\nItem %d | row = %d", i, menu.item[i].currentRow);
+//        printf("\nItem %d | column = %d\n", i, menu.item[i].currentColumn);
+//        system("PAUSE");
+//    }
 
     return menu;
 }
@@ -58,61 +71,130 @@ void run_menu(Menu *menu){
                 isCommand = true;
 
                 switch(input){
-                    case KEY_UP:
-                        if(menu->selectedIndex - menu->columns >= 0){
-                            menu->selectedIndex -= menu->columns;
+                    case KEY_UP:{
+                        int previousIndex = menu->selectedIndex;
+                        int currentColumn = menu->item[previousIndex].currentColumn;
+
+                        int newIndex = previousIndex - menu->columns;
+                        bool itFound = false;
+
+                        while(newIndex >= 0 &&
+                              menu->item[newIndex].currentColumn == currentColumn) {
+                            if (menu->item[newIndex].activated) {
+                                menu->selectedIndex = newIndex;
+                                itFound = true;
+                                break;
+                            }
+                            newIndex -= menu->columns;
                         }
 
-                        else{
-                            int currentColumn = menu->selectedIndex % menu->columns;
-                            for(int i = menu->numberItems - 1; i >= 0; i--){
-                                if(i % menu->columns == currentColumn){
+                        if (!itFound) {
+                            for (int i = menu->numberItems - 1; i >= 0; i--) {
+                                if (menu->item[i].currentColumn == currentColumn &&
+                                    menu->item[i].activated) {
                                     menu->selectedIndex = i;
                                     break;
                                 }
                             }
                         }
                         break;
+                    }
 
-                    case KEY_DOWN:
+                    case KEY_DOWN:{
+                        int previousIndex = menu->selectedIndex;
+                        int currentColumn = menu->item[previousIndex].currentColumn;
 
-                        if(menu->selectedIndex + menu->columns < menu->numberItems){
-                            menu->selectedIndex += menu->columns;
+                        int newIndex = previousIndex + menu->columns;
+                        bool itFound = false;
+
+                        while(newIndex < menu->numberItems &&
+                              menu->item[newIndex].currentColumn == currentColumn) {
+                            if (menu->item[newIndex].activated) {
+                                menu->selectedIndex = newIndex;
+                                itFound = true;
+                                break;
+                            }
+                            newIndex += menu->columns;
                         }
 
-                        else{
-                            int currentColumn = menu->selectedIndex % menu->columns;
-                            for(int i = 0; i < menu->numberItems; i++){
-                                if(i % menu->columns == currentColumn){
+                        if (!itFound) {
+                            for (int i = 0; i < menu->numberItems; i++) {
+                                if (menu->item[i].currentColumn == currentColumn &&
+                                    menu->item[i].activated) {
                                     menu->selectedIndex = i;
                                     break;
                                 }
                             }
                         }
                         break;
+                    }
 
-                    case KEY_LEFT:
-                        if(menu->selectedIndex == 0){
-                            menu->selectedIndex = menu->numberItems - 1;
+                    case KEY_LEFT:{
+                        int previousIndex = menu->selectedIndex;
+                        int currentRow = menu->item[previousIndex].currentRow;
+
+                        int newIndex = previousIndex - 1;
+                        bool itFound = false;
+
+                        while(newIndex >= 0 &&
+                              menu->item[newIndex].currentRow == currentRow) {
+                            if (menu->item[newIndex].activated) {
+                                menu->selectedIndex = newIndex;
+                                itFound = true;
+                                break;
+                            }
+                            newIndex--;
                         }
 
-                        else menu->selectedIndex -= 1;
-                        break;
-
-                    case KEY_RIGHT:
-                        if(menu->selectedIndex == (menu->numberItems - 1)){
-                            menu->selectedIndex = 0;
+                        if (!itFound) {
+                            for (int i = menu->numberItems - 1; i >= 0; i--) {
+                                if (menu->item[i].currentRow == currentRow &&
+                                    menu->item[i].activated) {
+                                    menu->selectedIndex = i;
+                                    break;
+                                }
+                            }
                         }
-                        else menu->selectedIndex += 1;
                         break;
+                    }
 
-                    case KEY_ENTER:
+                    case KEY_RIGHT:{
+                        int previousIndex = menu->selectedIndex;
+                        int currentRow = menu->item[previousIndex].currentRow;
+
+                        int newIndex = previousIndex + 1;
+                        bool itFound = false;
+
+                        while(newIndex < menu->numberItems &&
+                              menu->item[newIndex].currentRow == currentRow) {
+                            if (menu->item[newIndex].activated) {
+                                menu->selectedIndex = newIndex;
+                                itFound = true;
+                                break;
+                            }
+                            newIndex++;
+                        }
+
+                        if (!itFound) {
+                            for (int i = 0; i < menu->numberItems; i++) {
+                                if (menu->item[i].currentRow == currentRow &&
+                                    menu->item[i].activated) {
+                                    menu->selectedIndex = i;
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    }
+
+                    case KEY_ENTER:{
                         actionResult = menu->item[menu->selectedIndex].action();
 
                         if (actionResult == MENU_FLOW_EXIT) {
                             return;
                         }
                         break;
+                    }
                 }
             }
         }while(!isCommand);

@@ -27,10 +27,14 @@ int main()
         {.label = "SUBMENU", .action = call_SubMenu},
         {.label = "Option 1", .action = functionTest1},
         {.label = "Option 2", .action = functionTest2},
+        {.label = "Option 3", .action = functionTest3},
+        {.label = "Option 4", .action = functionTest4},
+        {.label = "Option 5", .action = functionTest5},
+        {.label = "Option 6", .action = functionTest6},
 
         {.label = "SAIR", .action = exit_menu}
     };
-    int columnsMenu = 2;
+    int columnsMenu = 3;
     int gapMenu = 3;
 
     mainMenu = CREATE_MENU(
@@ -40,7 +44,7 @@ int main()
         gapMenu
     );
 
-    status = disable_item(&mainMenu, "Option 2");
+    status = disable_item(&mainMenu, "Option 4");
     if(status == MENU_OP_ITEM_NOT_FOUND){
         printf("\nERROR: Label not found!\n");
         return MENU_OP_ITEM_NOT_FOUND;
